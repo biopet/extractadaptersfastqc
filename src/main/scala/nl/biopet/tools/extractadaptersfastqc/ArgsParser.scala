@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Sequencing Analysis Support Core - Leiden University Medical Center
+ * Copyright (c) 2018 Sequencing Analysis Support Core - Leiden University Medical Center
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -39,16 +39,19 @@ class ArgsParser(toolCommand: ToolCommand[Args])
     .text("Output file for adapters, is not supplied output will go to stdout")
   opt[Unit]("skipContams")
     .action((_, c) => c.copy(contaminated = false))
-    .text("If this is set only the adapters block is used, other wise contamination is also used")
+    .text(
+      "If this is set only the adapters block is used, other wise contamination is also used")
   opt[File]("contamFile")
     .action((x, c) => c.copy(contamFile = Some(x)))
-    .text("This is the file that does contain the known contamination from fastqc")
+    .text(
+      "This is the file that does contain the known contamination from fastqc")
   opt[File]("adapterFile")
     .action((x, c) => c.copy(adapterFile = Some(x)))
     .text("This is the file that does contain the known adapters from fastqc")
   opt[Double]("adapterCutoff")
     .action((x, c) => c.copy(adapterCutoff = x))
-    .text(s"The fraction of the adapters in a read should be above this fraction, default is ${Args().adapterCutoff}")
+    .text(
+      s"The fraction of the adapters in a read should be above this fraction, default is ${Args().adapterCutoff}")
   opt[Unit]("outputAsFasta")
     .action((_, c) => c.copy(outputAsFasta = true))
     .text(s"Output in fasta format, default only sequences")

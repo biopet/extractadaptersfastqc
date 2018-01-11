@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Sequencing Analysis Support Core - Leiden University Medical Center
+ * Copyright (c) 2018 Sequencing Analysis Support Core - Leiden University Medical Center
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -41,8 +41,11 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
     val adapterSet = cmdArgs.adapterFile.map(getFastqcSeqs)
     val contaminantSet = cmdArgs.contamFile.map(getFastqcSeqs)
 
-    val adapters = foundAdapters(fastqcData, cmdArgs.adapterCutoff, adapterSet.toSet.flatten)
-    val contams = foundOverrepresented(fastqcData, contaminantSet.toSet.flatten)
+    val adapters = foundAdapters(fastqcData,
+                                 cmdArgs.adapterCutoff,
+                                 adapterSet.toSet.flatten)
+    val contams =
+      foundOverrepresented(fastqcData, contaminantSet.toSet.flatten)
 
     writeOutput(adapters, cmdArgs.adapterOutputFile, cmdArgs.outputAsFasta)
     writeOutput(contams, cmdArgs.contamsOutputFile, cmdArgs.outputAsFasta)
@@ -53,8 +56,9 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
   def writeOutput(sequences: Set[AdapterSequence],
                   outputFile: Option[File],
                   outputAsFasta: Boolean = false): Unit = {
-    val content = if (outputAsFasta) sequences.map(_.asFastaLine).mkString("\n")
-    else sequences.map(_.seq).mkString("\n")
+    val content =
+      if (outputAsFasta) sequences.map(_.asFastaLine).mkString("\n")
+      else sequences.map(_.seq).mkString("\n")
     outputFile match {
       case Some(file) => writeLinesToFile(file, content :: Nil)
       case _ => println(content)
@@ -64,11 +68,7 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
 
   case class FastQCModule(name: String, status: String, lines: Seq[String])
   case class AdapterSequence(name: String, seq: String) {
-    def asFastaLine: String =
-      s"""
-        |>$name
-        |$seq
-      """.stripMargin
+    def asFastaLine: String = s">$name\n$seq"
   }
 
   /**
@@ -80,7 +80,8 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
     * @throws IllegalStateException if the module lines have no content or mapping is empty.
     */
   def qcModules(dataFile: File): Map[String, FastQCModule] = {
-    Source.fromFile(dataFile)
+    Source
+      .fromFile(dataFile)
       // drop all the characters before the first module delimiter (i.e. '>>')
       .dropWhile(_ != '>')
       // pull everything into a string
@@ -89,21 +90,23 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
       .split(">>END_MODULE\n")
       // make map of module name -> module lines
       .map {
-      case (modString) =>
-        // module name is in the first line, without '>>' and before the tab character
-        val Array(firstLine, otherLines) = modString
+        case (modString) =>
+          // module name is in the first line, without '>>' and before the tab character
+          val Array(firstLine, otherLines) = modString
           // drop all '>>' character (start of module)
-          .dropWhile(_ == '>')
-          // split first line and others
-          .split("\n", 2)
-          // and slice them
-          .slice(0, 2)
-        // extract module name and module status
-        val Array(modName, modStatus) = firstLine
-          .split("\t", 2)
-          .slice(0, 2)
-        modName -> FastQCModule(modName, modStatus, otherLines.split("\n").toSeq)
-    }
+            .dropWhile(_ == '>')
+            // split first line and others
+            .split("\n", 2)
+            // and slice them
+            .slice(0, 2)
+          // extract module name and module status
+          val Array(modName, modStatus) = firstLine
+            .split("\t", 2)
+            .slice(0, 2)
+          modName -> FastQCModule(modName,
+                                  modStatus,
+                                  otherLines.split("\n").toSeq)
+      }
       .toMap
   }
 
@@ -119,24 +122,30 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
   def foundAdapters(fastqcModules: Map[String, FastQCModule],
                     adapterCutoff: Double,
                     adapterSet: Set[AdapterSequence]): Set[AdapterSequence] = {
-    fastqcModules.get("Adapter Content").map { x =>
-      val header = x.lines.head.split("\t").tail.zipWithIndex
-      val lines = x.lines.tail.map(_.split("\t").tail)
-      val found = header
-        .filter(h => lines.exists(x => x(h._2).toFloat > adapterCutoff))
-        .map(_._1)
-      adapterSet.filter(x => found.contains(x.name))
-    }.getOrElse(Set())
+    fastqcModules
+      .get("Adapter Content")
+      .map { x =>
+        val header = x.lines.head.split("\t").tail.zipWithIndex
+        val lines = x.lines.tail.map(_.split("\t").tail)
+        val found = header
+          .filter(h => lines.exists(x => x(h._2).toFloat > adapterCutoff))
+          .map(_._1)
+        adapterSet.filter(x => found.contains(x.name))
+      }
+      .getOrElse(Set())
   }
 
-  def foundOverrepresented(fastqcModules: Map[String, FastQCModule],
-                           contaminantSet: Set[AdapterSequence]): Set[AdapterSequence] = {
-    val foundAdapterNames: Seq[String] = fastqcModules.get("Overrepresented sequences") match {
-      case None => Seq.empty[String]
-      case Some(qcModule) =>
-        for (line <- qcModule.lines if !(line.startsWith("#") || line.startsWith(">"));
-             values = line.split("\t") if values.size >= 4) yield values(3)
-    }
+  def foundOverrepresented(
+      fastqcModules: Map[String, FastQCModule],
+      contaminantSet: Set[AdapterSequence]): Set[AdapterSequence] = {
+    val foundAdapterNames: Seq[String] =
+      fastqcModules.get("Overrepresented sequences") match {
+        case None => Seq.empty[String]
+        case Some(qcModule) =>
+          for (line <- qcModule.lines
+               if !(line.startsWith("#") || line.startsWith(">"));
+               values = line.split("\t") if values.size >= 4) yield values(3)
+      }
 
     // select full sequences from known adapters and contaminants
     // based on overrepresented sequences results
@@ -146,15 +155,42 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
 
   def descriptionText: String =
     """
-      |
+      | This tool can extract the adapters and contamination from the output files from fastqc.
+      | The output can be only sequences or in a fasta format.
     """.stripMargin
   def manualText: String =
     s"""
+      |The tool wil only find sequences that are known to fastqc. This is by default defined in this files:
+      |- <fastqc_dir>/Configuration/adapter_list.txt
+      |- <fastqc_dir>/Configuration/contaminant_list.txt
       |
+      |This files are required for this tool to find the correct adapters.
+      |
+      |The adapter list is only available to fastqc 0.11+
     """.stripMargin
 
   def exampleText: String =
-    """
+    s"""
+      |A default run would look like this, output will go to stdout:
+      |${example("-i",
+                 "<fastqc_data_file>",
+                 "--contamFile",
+                 "<contems_file>",
+                 "--adapterFile",
+                 "<adapter_file>")}
       |
+      |To select output files:
+      |${example(
+         "-i",
+         "<fastqc_data_file>",
+         "--contamFile",
+         "<contems_file>",
+         "--adapterFile",
+         "<adapter_file>",
+         "--adapterOutputFile",
+         "<output_file>",
+         "--contamsOutputFile",
+         "<output_file>"
+       )}
     """.stripMargin
 }
