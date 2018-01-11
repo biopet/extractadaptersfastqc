@@ -24,8 +24,10 @@ package nl.biopet.tools.extractadaptersfastqc
 import java.io.File
 
 case class Args(dataFile: File = null,
-                outputFile: Option[File] = None,
+                adapterOutputFile: Option[File] = None,
+                contamsOutputFile: Option[File] = None,
                 contaminated: Boolean = true,
                 contamFile: Option[File] = None,
                 adapterFile: Option[File] = None,
-                adapterCutoff: Double = 0.001)
+                adapterCutoff: Double = 0.001,
+                outputAsFasta: Boolean = false)
