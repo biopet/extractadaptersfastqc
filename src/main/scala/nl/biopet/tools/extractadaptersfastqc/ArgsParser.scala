@@ -49,7 +49,7 @@ class ArgsParser(toolCommand: ToolCommand[Args])
   opt[Double]("adapterCutoff")
     .action((x, c) => c.copy(adapterCutoff = x))
     .text(s"The fraction of the adapters in a read should be above this fraction, default is ${Args().adapterCutoff}")
-  opt[Unit]("adapterCutoff")
+  opt[Unit]("outputAsFasta")
     .action((_, c) => c.copy(outputAsFasta = true))
     .text(s"Output in fasta format, default only sequences")
 }
