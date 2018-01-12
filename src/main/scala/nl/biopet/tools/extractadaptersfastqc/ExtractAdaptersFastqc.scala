@@ -60,6 +60,7 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
     logger.info("Done")
   }
 
+  /** This will write the output to a file or to stdout when none file supplied */
   def writeOutput(sequences: Set[AdapterSequence],
                   outputFile: Option[File],
                   outputAsFasta: Boolean = false): Unit = {
@@ -117,6 +118,7 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
       .toMap
   }
 
+  /** This will read known sequences */
   def getFastqcSeqs(file: File): Set[AdapterSequence] = {
     (for {
       line <- Source.fromFile(file).getLines()
@@ -126,6 +128,13 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
     } yield AdapterSequence(values(0), values(1))).toSet
   }
 
+  /**
+    * This method will find the adapters sequences from the fastqc data
+    * @param fastqcModules Content of the fastqc data file
+    * @param adapterCutoff Cutoff for adapters
+    * @param adapterSet Known sequences
+    * @return Found sequences
+    */
   def foundAdapters(fastqcModules: Map[String, FastQCModule],
                     adapterCutoff: Double,
                     adapterSet: Set[AdapterSequence]): Set[AdapterSequence] = {
@@ -142,6 +151,12 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
       .getOrElse(Set())
   }
 
+  /**
+    * This method will find the overrepresented sequences from the fastqc data
+    * @param fastqcModules Content of the fastqc data file
+    * @param contaminantSet Known sequences
+    * @return Found sequences
+    */
   def foundOverrepresented(
       fastqcModules: Map[String, FastQCModule],
       contaminantSet: Set[AdapterSequence]): Set[AdapterSequence] = {
