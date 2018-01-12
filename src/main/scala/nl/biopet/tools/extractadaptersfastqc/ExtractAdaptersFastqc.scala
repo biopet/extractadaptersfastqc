@@ -181,18 +181,18 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
       |A default run would look like this, output will go to stdout:
       |${example("-i",
                  "<fastqc_data_file>",
-                 "--contamFile",
+                 "--knownContamFile",
                  "<contems_file>",
-                 "--adapterFile",
+                 "--knownAdapterFile",
                  "<adapter_file>")}
       |
       |To select output files:
       |${example(
          "-i",
          "<fastqc_data_file>",
-         "--contamFile",
+         "--knownContamFile",
          "<contems_file>",
-         "--adapterFile",
+         "--knownAdapterFile",
          "<adapter_file>",
          "--adapterOutputFile",
          "<output_file>",

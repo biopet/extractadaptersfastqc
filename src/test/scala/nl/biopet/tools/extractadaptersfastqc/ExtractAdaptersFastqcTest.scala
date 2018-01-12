@@ -24,8 +24,8 @@ class ExtractAdaptersFastqcTest extends ToolTest[Args] {
     contamOutput.deleteOnExit()
     ExtractAdaptersFastqc.main(Array(
       "-i", resourcePath("/fastqc_data.txt"),
-      "--contamFile", resourcePath("/contaminant_list.txt"),
-      "--adapterFile", resourcePath("/adapter_list.txt"),
+      "--knownContamFile", resourcePath("/contaminant_list.txt"),
+      "--knownAdapterFile", resourcePath("/adapter_list.txt"),
       "--adapterOutputFile", adapterOutput.getAbsolutePath,
       "--contamsOutputFile", contamOutput.getAbsolutePath
     ))
