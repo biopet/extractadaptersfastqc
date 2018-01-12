@@ -1,8 +1,8 @@
 # ExtractAdaptersFastqc
 
 
- This tool can extract the adapters and contamination from the output files from fastqc.
- The output can be only sequences or in a fasta format.
+ The sequences can be output in plain text format with a newline character as a separator between the sequences.
+ Alternatively the sequences can be output in FASTA format.
     
 
 # Documentation

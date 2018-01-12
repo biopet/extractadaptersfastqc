@@ -41,6 +41,13 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
     val adapterSet = cmdArgs.adapterFile.map(getFastqcSeqs)
     val contaminantSet = cmdArgs.contamFile.map(getFastqcSeqs)
 
+    require(
+      adapterSet
+        .getOrElse(Set())
+        .nonEmpty || contaminantSet.getOrElse(Set()).nonEmpty,
+      "No known adapters or contaminations found, please supply the fastqc files"
+    )
+
     val adapters = foundAdapters(fastqcData,
                                  cmdArgs.adapterCutoff,
                                  adapterSet.toSet.flatten)
@@ -155,8 +162,8 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
 
   def descriptionText: String =
     """
-      | This tool can extract the adapters and contamination from the output files from fastqc.
-      | The output can be only sequences or in a fasta format.
+      | The sequences can be output in plain text format with a newline character as a separator between the sequences.
+      | Alternatively the sequences can be output in FASTA format.
     """.stripMargin
   def manualText: String =
     s"""
@@ -164,7 +171,7 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
       |- <fastqc_dir>/Configuration/adapter_list.txt
       |- <fastqc_dir>/Configuration/contaminant_list.txt
       |
-      |This files are required for this tool to find the correct adapters.
+      |These files are required for this tool to find the correct adapters.
       |
       |The adapter list is only available to fastqc 0.11+
     """.stripMargin
