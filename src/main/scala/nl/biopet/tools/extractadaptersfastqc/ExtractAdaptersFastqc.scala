@@ -141,11 +141,14 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
     fastqcModules
       .get("Adapter Content")
       .map { x =>
-        val header = x.lines.head.split("\t").tail.zipWithIndex
+        val header =
+          x.lines.headOption.getOrElse("").split("\t").tail.zipWithIndex
         val lines = x.lines.tail.map(_.split("\t").tail)
         val found = header
-          .filter(h => lines.exists(x => x(h._2).toFloat > adapterCutoff))
-          .map(_._1)
+          .filter {
+            case (_, idx) => lines.exists(x => x(idx).toFloat > adapterCutoff)
+          }
+          .map { case (name, _) => name }
         adapterSet.filter(x => found.contains(x.name))
       }
       .getOrElse(Set())
