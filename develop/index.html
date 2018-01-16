@@ -82,8 +82,8 @@
 
         
         <h1 id="description" class="section">Description</h1>
-        <p> This tool can extract the adapters and contamination from the output files from fastqc.
-         The output can be only sequences or in a fasta format.</p>
+        <p> The sequences can be output in plain text format with a newline character as a separator between the sequences.
+         Alternatively the sequences can be output in FASTA format.</p>
         
         <h1 id="installation" class="section">Installation</h1>
         <p>ExtractAdaptersFastqc requires Java 8 to be installed on your device. Download Java 8
@@ -97,20 +97,20 @@
         <p>The tool wil only find sequences that are known to fastqc. This is by default defined in this files:
         - <fastqc_dir>/Configuration/adapter<em>list.txt
         - <fastqc_dir>/Configuration/contaminant</em>list.txt</p>
-        <p>This files are required for this tool to find the correct adapters.</p>
+        <p>These files are required for this tool to find the correct adapters.</p>
         <p>The adapter list is only available to fastqc 0.11+</p>
         
         <h2 id="example" class="section">Example</h2>
         <p>A default run would look like this, output will go to stdout:</p>
         <pre><code>java -jar &lt;ExtractAdaptersFastqc_jar&gt; \
 -i &lt;fastqc_data_file&gt; \
---contamFile &lt;contems_file&gt; \
---adapterFile &lt;adapter_file&gt;</code></pre>
+--knownContamFile &lt;contems_file&gt; \
+--knownAdapterFile &lt;adapter_file&gt;</code></pre>
         <p>To select output files:</p>
         <pre><code>java -jar &lt;ExtractAdaptersFastqc_jar&gt; \
 -i &lt;fastqc_data_file&gt; \
---contamFile &lt;contems_file&gt; \
---adapterFile &lt;adapter_file&gt; \
+--knownContamFile &lt;contems_file&gt; \
+--knownAdapterFile &lt;adapter_file&gt; \
 --adapterOutputFile &lt;output_file&gt; \
 --contamsOutputFile &lt;output_file&gt;</code></pre>
         
@@ -148,37 +148,37 @@
               <td>--inputFile, -i</td>
               <td>yes</td>
               <td>no</td>
-              <td>Fastqc data file</td>
+              <td>Fastqc data file (i.e., fastqc_data.txt file in the FastQC output)</td>
             </tr>
             <tr>
               <td>--adapterOutputFile</td>
               <td>no</td>
               <td>no</td>
-              <td>Output file for adapters, is not supplied output will go to stdout</td>
+              <td>Output file for adapters, if not supplied output will go to stdout</td>
             </tr>
             <tr>
               <td>--contamsOutputFile</td>
               <td>no</td>
               <td>no</td>
-              <td>Output file for adapters, is not supplied output will go to stdout</td>
+              <td>Output file for adapters, if not supplied output will go to stdout</td>
             </tr>
             <tr>
               <td>--skipContams</td>
               <td>no</td>
               <td>no</td>
-              <td>If this is set only the adapters block is used, other wise contamination is also used</td>
+              <td>If this is set only the adapters block is used, other wise contaminations is also used</td>
             </tr>
             <tr>
-              <td>--contamFile</td>
+              <td>--knownContamFile</td>
               <td>no</td>
               <td>no</td>
-              <td>This is the file that does contain the known contamination from fastqc</td>
+              <td>This file should contain the known contaminations from fastqc</td>
             </tr>
             <tr>
-              <td>--adapterFile</td>
+              <td>--knownAdapterFile</td>
               <td>no</td>
               <td>no</td>
-              <td>This is the file that does contain the known adapters from fastqc</td>
+              <td>This file should contain the known adapters from fastqc</td>
             </tr>
             <tr>
               <td>--adapterCutoff</td>
