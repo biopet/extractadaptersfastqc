@@ -24,7 +24,7 @@ package nl.biopet.tools.extractadaptersfastqc
 import java.io.{File, FileNotFoundException}
 
 import nl.biopet.utils.tool.ToolCommand
-import nl.biopet.utils.IoUtils.writeLinesToFile
+import nl.biopet.utils.io.writeLinesToFile
 
 import scala.io.Source
 

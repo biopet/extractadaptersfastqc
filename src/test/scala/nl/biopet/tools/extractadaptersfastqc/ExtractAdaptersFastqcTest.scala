@@ -2,7 +2,7 @@ package nl.biopet.tools.extractadaptersfastqc
 
 import java.io.File
 
-import nl.biopet.utils.IoUtils
+import nl.biopet.utils.io._
 import nl.biopet.utils.test.tools.ToolTest
 import nl.biopet.utils.tool.ToolCommand
 import org.testng.annotations.Test
@@ -30,8 +30,8 @@ class ExtractAdaptersFastqcTest extends ToolTest[Args] {
       "--contamsOutputFile", contamOutput.getAbsolutePath
     ))
 
-    IoUtils.getLinesFromFile(adapterOutput) shouldBe List("AGATCGGAAGAG")
-    IoUtils.getLinesFromFile(contamOutput) shouldBe List(
+    getLinesFromFile(adapterOutput) shouldBe List("AGATCGGAAGAG")
+    getLinesFromFile(contamOutput) shouldBe List(
       "GATCGGAAGAGCACACGTCTGAACTCCAGTCACGTCCGCATCTCGTATGCCGTCTTCTGCTTG",
       "GATCGGAAGAGCACACGTCTGAACTCCAGTCACATCACGATCTCGTATGCCGTCTTCTGCTTG")
   }
