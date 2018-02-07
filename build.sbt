@@ -14,6 +14,6 @@ developers += Developer(id="ffinfo", name="Peter van 't Hof", email="pjrvanthof@
 
 scalaVersion := "2.11.11"
 
-libraryDependencies += "com.github.biopet" %% "tool-utils" % "0.2"
-libraryDependencies += "com.github.biopet" %% "ngs-utils" % "0.2"
-libraryDependencies += "com.github.biopet" %% "tool-test-utils" % "0.1" % Test
+libraryDependencies += "com.github.biopet" %% "tool-utils" % "0.3-SNAPSHOT" changing()
+libraryDependencies += "com.github.biopet" %% "ngs-utils" % "0.3-SNAPSHOT" changing()
+libraryDependencies += "com.github.biopet" %% "tool-test-utils" % "0.2-SNAPSHOT" % Test changing()
