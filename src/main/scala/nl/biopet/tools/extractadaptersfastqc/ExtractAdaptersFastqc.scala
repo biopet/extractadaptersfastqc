@@ -48,9 +48,8 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
       "No known adapters or contaminations found, please supply the fastqc files"
     )
 
-    val adapters = foundAdapters(fastqcData,
-                                 cmdArgs.adapterCutoff,
-                                 adapterSet.toSet.flatten)
+    val adapters =
+      foundAdapters(fastqcData, cmdArgs.adapterCutoff, adapterSet.toSet.flatten)
     val contams =
       foundOverrepresented(fastqcData, contaminantSet.toSet.flatten)
 
@@ -69,7 +68,7 @@ object ExtractAdaptersFastqc extends ToolCommand[Args] {
       else sequences.map(_.seq).mkString("\n")
     outputFile match {
       case Some(file) => writeLinesToFile(file, content :: Nil)
-      case _ => println(content)
+      case _          => println(content)
     }
 
   }
