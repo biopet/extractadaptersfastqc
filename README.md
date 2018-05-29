@@ -3,7 +3,6 @@
 
 ExtractAdaptersFastqc reads which adapter sequences where found from a FastQC raw report.
 These sequences can be used as input for a QC tool such as cutadapt.
-
 The sequences can be output in plain text format with a
 newline character as a separator between the sequences.
 Alternatively the sequences can be output in FASTA format.
